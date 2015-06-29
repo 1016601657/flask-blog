@@ -3,7 +3,7 @@ import os
 from flask.ext.bootstrap import Bootstrap
 from flask.ext.moment import Moment
 from flask.ext.sqlalchemy import SQLAlchemy
-from flask.ext.script import Shell
+from flask.ext.script import Shell,Manager
 # from flask.ext.wtf import Form
 # from wtforms import StringField, SubmitField
 # from wtforms.validators import Required
@@ -13,6 +13,7 @@ from wtforms.validators import Required
 from flask import request
 from datetime import datetime
 app = Flask(__name__)
+manager = Manager(app)
 bootstrap = Bootstrap(app)
 moment = Moment(app)
 app.config['SECRET_KEY'] = 'hard to guess string'
@@ -80,8 +81,8 @@ def internal_server_error(e):
 def make_shell_context():
 	return dict(app=app, db=db, User=User, Role=Role)
 
-app.add_command("shell", Shell(make_context=make_shell_context))
+manager.add_command("shell", Shell(make_context=make_shell_context))
 
 if __name__ == '__main__':
 	app.debug=True
-	app.run()
+	manager.run()
