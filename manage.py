@@ -52,13 +52,23 @@ def index():
 	name = None
 	form = NameForm()
 	if form.validate_on_submit():
-		name = form.name.data
-		old_name = session.get('name')
-		if name is not None and name != old_name:
-			flash('look likes you change you name')
-		session['name'] = name
-		return redirect(url_for('index'))
-	return render_template('hello.html', form=form, name=session.get('name'))
+		# name = form.name.data
+		# old_name = session.get('name')
+		# if name is not None and name != old_name:
+		# 	flash('look likes you change you name')
+		# session['name'] = name
+		# return redirect(url_for('index'))
+		# user = User.query.filter_by(name).first()
+		user = User.query.filter_by(username=form.name.data).first()
+		if user is None:
+			# user = User(name)
+			user = User(username = form.name.data)
+			db.session.add(user)
+			session['known'] = False
+		else:
+			session['known'] = True
+		session['name'] = form.name.data
+	return render_template('hello.html', form=form, name=session.get('name'), known=session.get('known',False))
 
 @app.route('/hello/<name>')
 def hello(name):
