@@ -14,19 +14,27 @@ from wtforms import StringField, SubmitField
 from wtforms.validators import Required
 from flask import request
 from datetime import datetime
+
 app = Flask(__name__)
 manager = Manager(app)
 bootstrap = Bootstrap(app)
 moment = Moment(app)
+
 mail = Mail(app)
+app.config.from_object(__name__)
+
+# app.config['MAIL_SERVER'] = 'smtp.exmail.qq.com'
 app.config['MAIL_SERVER'] = 'smtp.163.com'
-app.config['MAIL_PORT'] = 994
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USE_SSL'] = True
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USERNAME'] = '13120321516@163.com'
+
+# app.config['MAIL_USERNAME'] = 'jinshuai.li@meishisong.cn'
 app.config['MAIL_PASSWORD'] = 'lijinshuai0514'
 app.config['FLASKY_MAIL_SUBJECT_PREFIX'] = '[Flasky]'
 app.config['FLASKY_MAIL_SENDER'] = 'Flasky Admin <flasky@example.com>'
-app.config['FLASKY_ADMIN'] = os.environ.get('FLASKY_ADMIN')
+app.config['FLASKY_ADMIN'] = '1016601657@qq.com'
 
 app.config['SECRET_KEY'] = 'hard to guess string'
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -58,6 +66,10 @@ class Role(db.Model):
 class NameForm(Form):
 	name = StringField('What is your name?', validators=[Required()])
 	submit = SubmitField('Submit')
+
+@app.route('/admin')
+def admin():
+	return 'app.config.admin %s'% app.config['FLASKY_ADMIN']
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
